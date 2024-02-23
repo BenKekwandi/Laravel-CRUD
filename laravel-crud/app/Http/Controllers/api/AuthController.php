@@ -92,10 +92,18 @@ class AuthController extends Controller
                 'message' => 'User is not even logged in'
             ], 401); 
         }
-
+        
         $request->user()->tokens()->delete();
 
-        $accessToken = $request->header('Authorization');
+        $accessToken = explode("Bearer ", $request->header('Authorization'))[1];
+
+        if(!Redis::exists("user:session:$accessToken"))
+        {
+            return response()->json([
+                'message' => 'User Token not found',
+                'data'=> Redis::get("user:session:$accessToken")
+            ], 401);
+        }
 
         Redis::del("user:session:$accessToken");
 
