@@ -13,8 +13,15 @@ class SessionMiddleware
  
     public function handle(Request $request, Closure $next): Response
     {
+        $authorizationHeader = $request->header('Authorization');
 
-        $accessToken = explode("Bearer ", $request->header('Authorization'))[1];
+        if (!$authorizationHeader || strpos($authorizationHeader, 'Bearer ') !== 0) {
+            return response()->json([
+                'message' => 'Invalid or missing Authorization header'
+            ], 401);
+        }
+
+        $accessToken = explode("Bearer ", $authorizationHeader)[1];
 
         if(!Redis::exists("user:session:$accessToken"))
         {
@@ -34,14 +41,6 @@ class SessionMiddleware
                 'data'=> Redis::get("user:session:$accessToken")
             ], 401);
         }
-
-        // return response()->json([
-        //     "message"=>"Successfull Authentication",
-        //     'token' => $accessToken,
-        //     'tokenData'=>$tokenData,
-        //     "currentTime"=> $currentTime,
-        //     'expiration'=>$tokenData['expired_at']
-        // ], 200);
 
         return $next($request);
 
