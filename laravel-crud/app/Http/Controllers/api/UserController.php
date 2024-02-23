@@ -44,7 +44,6 @@ class UserController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
-            'surname' => 'required|max:255',
             'email' => 'required|email|unique:users|max:255',
             'password' => 'required|min:6',
         ]);
@@ -56,7 +55,6 @@ class UserController extends Controller
         try {
             $user = new User();
             $user->name = $request->input('name');
-            $user->surname = $request->input('surname');
             $user->email = $request->input('email');
             $user->password = Hash::make($request->input('password'));
             $user->save();
@@ -71,7 +69,6 @@ class UserController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
-            'surname' => 'required|max:255',
             'email' => 'required|email|unique:users,email,' . $id . ',id|max:255',
             'password' => 'required|min:6',
         ]);
@@ -83,7 +80,6 @@ class UserController extends Controller
         try {
             $user = User::findOrFail($id);
             $user->name = $request->input('name');
-            $user->surname = $request->input('surname');
             $user->email = $request->input('email');
             $user->password = Hash::make($request->input('password'));
             $user->save();
