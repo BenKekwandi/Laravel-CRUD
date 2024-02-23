@@ -42,14 +42,6 @@ class SessionMiddleware
             ], 401);
         }
 
-        // return response()->json([
-        //     "message"=>"Successfull Authentication",
-        //     'token' => $accessToken,
-        //     'tokenData'=>$tokenData,
-        //     "currentTime"=> $currentTime,
-        //     'expiration'=>$tokenData['expired_at']
-        // ], 200);
-
         return $next($request);
 
     }
